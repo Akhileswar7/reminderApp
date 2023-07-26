@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -57,6 +58,7 @@ public class remainderActivity extends AppCompatActivity {
         mSubmitbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String id= String.valueOf(getcount());
                 String title = mTitledit.getText().toString().trim();                               //access the data form the input field
                 String date = mDatebtn.getText().toString().trim();                                 //access the date form the choose date button
                 String time = mTimebtn.getText().toString().trim();                                 //access the time form the choose time button
@@ -67,19 +69,22 @@ public class remainderActivity extends AppCompatActivity {
                     if (time.equals("time") || date.equals("date")) {                                               //shows toast if date and time are not selected
                         Toast.makeText(getApplicationContext(), "Please select date and time", Toast.LENGTH_SHORT).show();
                     } else {
-                        processinsert(title, date, time);
+                        processinsert(id,title, date, time);
 
                     }
                 }
-
-
             }
         });
     }
 
+    public int getcount() {
+        Cursor c=new dbmanager(getApplicationContext()).get();
+        c.moveToFirst();
+        return c.getInt(0)+1;
+    }
 
-    private void processinsert(String title, String date, String time) {
-        String result = new dbmanager(this).addreminder(title, date, time);                  //inserts the title,date,time into sql lite database
+    private void processinsert(String id, String title, String date, String time) {
+        String result = new dbmanager(this).addreminder(id,title, date, time);                  //inserts the title,date,time into sql lite database
         setAlarm(title, date, time);                                                                //calls the set alarm method to set alarm
         mTitledit.setText("");
         Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
@@ -156,7 +161,7 @@ public class remainderActivity extends AppCompatActivity {
         try {
             Date date1 = formatter.parse(dateandtime);
             am.set(AlarmManager.RTC_WAKEUP, date1.getTime(), pendingIntent);
-            Toast.makeText(getApplicationContext(), "Alaram", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Alarm", Toast.LENGTH_SHORT).show();
 
         } catch (ParseException e) {
             e.printStackTrace();
@@ -167,4 +172,5 @@ public class remainderActivity extends AppCompatActivity {
         startActivity(intentBack);                                                                  //navigates from adding reminder activity ot mainactivity
 
     }
+
 }

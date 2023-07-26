@@ -16,7 +16,7 @@ import androidx.core.app.NotificationCompat;
 public class Alarmbroadcast extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        Bundle bundle = intent.getExtras();
+        Bundle bundle =  intent.getExtras();
         String text = bundle.getString("event");
         String date = bundle.getString("date") + " " + bundle.getString("time");
 
